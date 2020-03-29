@@ -1,23 +1,35 @@
-function time() {
+function getTime() {
   return process.hrtime.bigint();
 }
 
 function logMem() {
-  const vals = Object.entries(process.memoryUsage()).map(([k, v]) => {
-    return `${k}=${`${(v / 1e6).toFixed(1)}M`.padEnd(7)}`;
+  const mapping = {
+    heapTotal: 'heap', heapUsed: 'used', external: 'ext', arrayBuffers: 'arr'
+  };
+  const vals = Object.entries(process.memoryUsage())
+  .filter(([k, v]) => {
+    return v > 100000;
+  })
+  .map(([k, v]) => {
+    return `${mapping[k] || k}=${`${(v / 1000000).toFixed(1)}mb`}`;
   });
-  // console.log('RAM:', ...vals);
+  console.log('RAM:', vals.join(' '));
 }
 
-async function bench(label, samples, callback) {
+async function mark(label, samples, callback) {
   let initial = false;
   if (typeof label === 'function' && !samples && !callback) {
     callback = label;
     samples = 1;
-    label = 'Initialized in';
+    label = 'Initialized:';
     initial = true;
   }
-  const [μs, ms, sec] = [1000n, 1000000n, 1000000000n];
+  if (typeof label === 'string' && typeof samples === 'function') {
+    callback = samples;
+    samples = 1;
+  }
+  if (!samples) samples = 1;
+  const [μs, ms, sec] = [10n ** 3n, 10n ** 6n, 10n ** 9n];
   const start = getTime();
   for (let i = 0; i < samples; i++) {
     let val = callback();
@@ -40,15 +52,36 @@ async function bench(label, samples, callback) {
 
   const perSec = (sec / perItem).toString();
   let str = `${label} `;
-  if (!initial) {
-    str += `x ${perSec} ops/sec @ ${perItemStr}${symbol}/op`;
-  } else {
+  if (initial) {
     str += `${perItemStr}${symbol}`;
+  } else {
+    str += `x ${perSec} ops/sec @ ${perItemStr}${symbol}/op`;
   }
   console.log(str);
 }
 
+async function run(tries, callback) {
+  if (typeof tries === 'function') {
+    callback = tries;
+    tries = undefined;
+  }
+  let log = '-------\nBenchmarking';
+  if (tries) {
+    if (!Array.isArray(tries)) {
+      throw new TypeError('nano-bench.run: versions must be an array.');
+    }
+    for (const params of tries) {
+      const args = Array.isArray(params) ? params : [params];
+      console.log(`${log} ${JSON.stringify(args)}...`);
+      await callback(...args);
+    }
+  } else {
+    console.log(log);
+    await callback();
+  }
+}
+
 exports.getTime = getTime;
 exports.logMem = logMem;
-exports.bench = bench;
-
+exports.mark = mark;
+exports.run = run;

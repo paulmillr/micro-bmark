@@ -16,17 +16,18 @@ verify x 251 ops/sec @ 3ms/op
 
 ```js
 const bench = require('nano-bench');
+const {run, mark} = bench; // or bench.mark
 
-bench.run(async () => {
-  await bench.mark('getPublicKey', samples, () => {
+run(async () => {
+  await mark('getPublicKey', () => {
     pub = secp.getPublicKey(priv);
   });
 
-  await bench.mark('sign', samples, async () => {
+  await mark('sign', samples, async () => {
     await secp.sign(msg, priv, { canonical: true });
   });
 
-  await bench.mark('verify', samples, () => {
+  await mark('verify', samples, () => {
     secp.verify(signed, msg, pub);
   });
 
