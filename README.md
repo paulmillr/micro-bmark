@@ -4,20 +4,30 @@ Benchmark your node.js projects with nanosecond resolution.
 
     npm install --save-dev nano-bench
 
+Outputs results in nice format:
+
+```
+getPublicKey x 2411 ops/sec @ 414μs/op
+sign x 1823 ops/sec @ 548μs/op
+verify x 251 ops/sec @ 3ms/op
+```
+
 ## Usage
 
 ```js
 const bench = require('nano-bench');
 
 bench.run(async () => {
-  // Supports syncronous functions
-  await bench.mark('array conversion', () => {
-    new Array(65536).fill(1).map(a => a + a);
+  await bench.mark('getPublicKey', samples, () => {
+    pub = secp.getPublicKey(priv);
   });
 
-  await bench.mark('array async', async () => {
-    await Promise.resolve();
-    new Array(65536).fill(2).map(a => a * a);
+  await bench.mark('sign', samples, async () => {
+    await secp.sign(msg, priv, { canonical: true });
+  });
+
+  await bench.mark('verify', samples, () => {
+    secp.verify(signed, msg, pub);
   });
 
   // Log current RAM
