@@ -4,7 +4,7 @@
   "description": "Benchmark your node.js projects with nanosecond resolution.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "index.js"
   },
   "keywords": ["benchmark", "bench", "mark", "nanosecond", "microsecond", "millisecond", "hrtime", "date"],
   "author": "Paul Miller (https://paulmillr.com)",
