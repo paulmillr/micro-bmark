@@ -1,5 +1,5 @@
 {
-  "name": "nano-bench",
+  "name": "micro-bmark",
   "version": "0.1.0",
   "description": "Benchmark your node.js projects with nanosecond resolution.",
   "main": "index.js",
@@ -8,5 +8,10 @@
   },
   "keywords": ["benchmark", "bench", "mark", "nanosecond", "microsecond", "millisecond", "hrtime", "date"],
   "author": "Paul Miller (https://paulmillr.com)",
+  "homepage": "https://github.com/paulmillr/micro-bmark",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/paulmillr/micro-bmark.git"
+  },
   "license": "MIT"
 }

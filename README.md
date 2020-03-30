@@ -1,8 +1,8 @@
-# nano-bench
+# micro-bmark
 
 Benchmark your node.js projects with nanosecond resolution.
 
-    npm install --save-dev nano-bench
+    npm install --save-dev micro-bmark
 
 Outputs results in nice format:
 
@@ -15,7 +15,7 @@ verify x 251 ops/sec @ 3ms/op
 ## Usage
 
 ```js
-const bench = require('nano-bench');
+const bench = require('micro-bmark');
 const {run, mark} = bench; // or bench.mark
 
 run(async () => {
