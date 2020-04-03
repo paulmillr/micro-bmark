@@ -1,3 +1,6 @@
+const green = '\x1b[32m';
+const blue = '\x1b[34m';
+const reset = '\x1b[0m';
 function getTime() {
   return process.hrtime.bigint();
 }
@@ -55,7 +58,7 @@ async function mark(label, samples, callback) {
   if (initial) {
     str += `${perItemStr}${symbol}`;
   } else {
-    str += `x ${perSec} ops/sec @ ${perItemStr}${symbol}/op`;
+    str += `x ${green}${perSec}${reset} ops/sec @ ${blue}${perItemStr}${symbol}${reset}/op`;
   }
   console.log(str);
 }
