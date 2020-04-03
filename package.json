@@ -1,6 +1,6 @@
 {
   "name": "micro-bmark",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Benchmark your node.js projects with nanosecond resolution.",
   "main": "index.js",
   "scripts": {
