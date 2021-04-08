@@ -7,15 +7,18 @@ function getTime() {
 
 function logMem() {
   const mapping = {
-    heapTotal: 'heap', heapUsed: 'used', external: 'ext', arrayBuffers: 'arr'
+    heapTotal: 'heap',
+    heapUsed: 'used',
+    external: 'ext',
+    arrayBuffers: 'arr',
   };
   const vals = Object.entries(process.memoryUsage())
-  .filter(([k, v]) => {
-    return v > 100000;
-  })
-  .map(([k, v]) => {
-    return `${mapping[k] || k}=${`${(v / 1000000).toFixed(1)}mb`}`;
-  });
+    .filter(([k, v]) => {
+      return v > 100000;
+    })
+    .map(([k, v]) => {
+      return `${mapping[k] || k}=${`${(v / 1000000).toFixed(1)}mb`}`;
+    });
   console.log('RAM:', vals.join(' '));
 }
 
@@ -53,7 +56,7 @@ async function mark(label, samples, callback) {
     perItemStr = (perItem / ms).toString();
   }
 
-  const perSec = (sec / perItem).toString();
+  const perSec = Intl.NumberFormat('en-US').format(sec / perItem);
   let str = `${label} `;
   if (initial) {
     str += `${perItemStr}${symbol}`;
@@ -71,7 +74,7 @@ async function run(tries, callback) {
   let log = '-------\nBenchmarking';
   if (tries) {
     if (!Array.isArray(tries)) {
-      throw new TypeError('nano-bench.run: versions must be an array.');
+      throw new TypeError('micro-bmark.run: versions must be an array');
     }
     for (const params of tries) {
       const args = Array.isArray(params) ? params : [params];
