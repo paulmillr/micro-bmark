@@ -4,13 +4,21 @@ Benchmark your node.js projects with nanosecond resolution.
 
     npm install --save-dev micro-bmark
 
-Outputs results in nice format:
+Features:
+
+- As lightweight as possible to not interfere with benchmarked code
+- No code for estimating running time - specify samples manually
+- Colorful formatting
+- Shows relative margin of error **only if it's high**
 
 ```
-getPublicKey x 2411 ops/sec @ 414μs/op
-sign x 1823 ops/sec @ 548μs/op
-verify x 251 ops/sec @ 3ms/op
+getPublicKey(utils.randomPrivateKey()) x 6,109 ops/sec @ 163μs/op ± 8.33% (min: 142μs, max: 17ms)
+sign x 5,000 ops/sec @ 199μs/op
+signSync x 4,638 ops/sec @ 215μs/op
+verify x 969 ops/sec @ 1ms/op
 ```
+
+![](https://user-images.githubusercontent.com/574696/184464811-8cf35428-d5bf-4cdc-9d9f-547337dab7b5.png)
 
 ## Usage
 
@@ -19,17 +27,8 @@ const bench = require('micro-bmark');
 const {run, mark} = bench; // or bench.mark
 
 run(async () => {
-  await mark('getPublicKey', () => {
-    pub = secp.getPublicKey(priv);
-  });
-
-  await mark('sign', samples, async () => {
-    await secp.sign(msg, priv, { canonical: true });
-  });
-
-  await mark('verify', samples, () => {
-    secp.verify(signed, msg, pub);
-  });
+  await mark('base', () => Promise.resolve(1));
+  await mark('sqrt', 10000, () => Math.sqrt(2));
 
   // Log current RAM
   bench.logMem();
@@ -57,5 +56,8 @@ Returns time in bigint.
 
 ## License
 
-MIT License (c) 2020 Paul Miller (https://paulmillr.com)
+MIT License
 
+Copyright (c) 2020 Paul Miller (https://paulmillr.com)
+Copyright (c) 2010-2016 Mathias Bynens, John-David Dalton
+Copyright (c) Robert Kieffer from JSLitmus.js
