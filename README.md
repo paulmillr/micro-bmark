@@ -12,10 +12,12 @@ Features:
 - Shows relative margin of error **only if it's high**
 
 ```
-getPublicKey(utils.randomPrivateKey()) x 6,109 ops/sec @ 163μs/op ± 8.33% (min: 142μs, max: 17ms)
-sign x 5,000 ops/sec @ 199μs/op
-signSync x 4,638 ops/sec @ 215μs/op
+getPublicKey() x 6,072 ops/sec @ 164μs/op ± 8.22% (min: 143μs, max: 17ms)
+sign x 4,980 ops/sec @ 200μs/op
+signSync x 4,671 ops/sec @ 214μs/op
 verify x 969 ops/sec @ 1ms/op
+recoverPublicKey x 890 ops/sec @ 1ms/op
+getSharedSecret aka ecdh x 585 ops/sec @ 1ms/op
 ```
 
 ![](https://user-images.githubusercontent.com/574696/184465244-b5784438-6af8-4a3d-abaa-03a0057768e6.png)
