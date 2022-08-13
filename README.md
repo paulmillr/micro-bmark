@@ -18,7 +18,7 @@ signSync x 4,638 ops/sec @ 215μs/op
 verify x 969 ops/sec @ 1ms/op
 ```
 
-![](https://user-images.githubusercontent.com/574696/184464811-8cf35428-d5bf-4cdc-9d9f-547337dab7b5.png)
+![](https://user-images.githubusercontent.com/574696/184465244-b5784438-6af8-4a3d-abaa-03a0057768e6.png)
 
 ## Usage
 
