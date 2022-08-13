@@ -58,6 +58,4 @@ Returns time in bigint.
 
 MIT License
 
-Copyright (c) 2020 Paul Miller (https://paulmillr.com)
-Copyright (c) 2010-2016 Mathias Bynens, John-David Dalton
-Copyright (c) Robert Kieffer from JSLitmus.js
+Copyright (c) 2020 Paul Miller (https://paulmillr.com), (c) 2010-2016 Mathias Bynens, John-David Dalton, (c) Robert Kieffer from JSLitmus.js
