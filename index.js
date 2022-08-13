@@ -38,7 +38,7 @@ async function mark(label, samples, callback) {
   const [μs, ms, sec] = [10n ** 3n, 10n ** 6n, 10n ** 9n];
   const start = getTime();
   for (let i = 0; i < samples; i++) {
-    let val = callback({ i, samples });
+    let val = callback(i);
     if (val instanceof Promise) await val;
   }
   const end = getTime();
