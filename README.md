@@ -6,10 +6,11 @@ Benchmark your node.js projects with nanosecond resolution.
 
 Features:
 
-- As lightweight as possible to not interfere with benchmarked code
+- Utilizes node.js `process.hrtime` for 1ns resolution
+- Colorful formatting with nice units
+- No dependencies, only ~150 lines of code: as lightweight as possible to not interfere with benchmarked code
 - No code for estimating running time - specify samples manually
-- Colorful formatting
-- Shows relative margin of error **only if it's high**
+- Shows relative margin of error, min/max runs **only if it's high**
 
 ![](https://user-images.githubusercontent.com/574696/184465244-b5784438-6af8-4a3d-abaa-03a0057768e6.png)
 
