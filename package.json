@@ -17,7 +17,8 @@
     "microsecond",
     "millisecond",
     "hrtime",
-    "date"
+    "date",
+    "micro"
   ],
   "author": "Paul Miller (https://paulmillr.com)",
   "homepage": "https://github.com/paulmillr/micro-bmark",
