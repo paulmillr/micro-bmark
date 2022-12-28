@@ -2,7 +2,7 @@ const red = '\x1b[31m';
 const green = '\x1b[32m';
 const blue = '\x1b[34m';
 const reset = '\x1b[0m';
-function getTime() {
+function measure() {
   return process.hrtime.bigint();
 }
 
@@ -53,6 +53,35 @@ function formatD(mean) {
   return perItemStr + symbol;
 }
 
+// Mutates array by sorting it
+function calcStats(list) {
+  list.sort((a, b) => Number(a - b));
+  const samples = list.length;
+  const sum = list.reduce((a, b) => a + b, 0n);
+  const mean = sum / BigInt(samples); // avg
+  const median = list[Math.floor(samples / 2)];
+
+  const min = list[0];
+  const max = list[samples - 1];
+
+  const _a = list.reduce((a, b) => a + (b - mean) ** 2n);
+  const variance = Number(_a) / samples - 1;
+  const sd = Math.sqrt(variance);
+
+  // Compute the standard error of the mean
+  // a.k.a. the standard deviation of the sampling distribution of the sample mean
+  const sem = sd / Math.sqrt(samples);
+  const df = samples - 1; // degrees of freedom
+  const critical = tTable[Math.round(df) || 1] || tTable.infinity; // critical value
+  const moe = sem * critical; // margin of error
+  const rme = (moe / Number(mean)) * 100 || 0; // relative margin of error
+  const formatted = `${red}± ${rme.toFixed(2)}% (min: ${formatD(min)}, max: ${formatD(
+    max
+  )})${reset}`;
+  // return { rme, min: Number(min), max: Number(max), mean: Number(mean), median: Number(median), formatted }
+  return { rme, min, max, mean, median, formatted };
+}
+
 async function mark(label, samples, callback) {
   let initial = false;
   if (typeof label === 'function' && !samples && !callback) {
@@ -68,44 +97,28 @@ async function mark(label, samples, callback) {
   if (samples == null) samples = 1;
   if (typeof samples !== 'number' || samples <= 0) throw new Error('samples must be a number');
 
-  const times = new Array(samples);
-  const start = getTime();
+  // List containing sample times
+  const list = new Array(samples);
   for (let i = 0; i < samples; i++) {
-    const sampleStart = getTime();
+    const start = measure();
     const val = callback(i);
     if (val instanceof Promise) await val;
-    times[i] = getTime() - sampleStart;
+    const stop = measure();
+    list[i] = stop - start;
   }
-  const total = getTime() - start;
-  const mean = total / BigInt(samples); // per item
-  times.sort((a, b) => Number(a - b));
-  const min = times[0];
-  const max = times[samples - 1];
-
-  const _a = times.reduce((a, b) => a + (b - mean) ** 2n);
-  const variance = Number(_a) / samples - 1;
-  const sd = Math.sqrt(variance);
-
-  // Compute the standard error of the mean
-  // a.k.a. the standard deviation of the sampling distribution of the sample mean
-  const sem = sd / Math.sqrt(samples);
-  const df = samples - 1; // degrees of freedom
-  const critical = tTable[Math.round(df) || 1] || tTable.infinity; // critical value
-  const moe = sem * critical; // margin of error
-  const rme = (moe / Number(mean)) * 100 || 0; // relative margin of error
-  const perItemStr = formatD(mean);
-  const perSec = formatter.format(sec / mean);
+  const stats = calcStats(list);
+  const perItemStr = formatD(stats.mean);
+  const perSec = formatter.format(sec / stats.mean);
   let str = `${label} `;
   if (initial) {
     str += perItemStr;
   } else {
     str += `x ${green}${perSec}${reset} ops/sec @ ${blue}${perItemStr}${reset}/op`;
   }
-  if (rme >= 1) {
-    str += ` ${red}± ${rme.toFixed(2)}% (min: ${formatD(min)}, max: ${formatD(max)})${reset}`;
-  }
+  if (stats.rme >= 1) str += ` ${stats.formatted}`;
   console.log(str);
-  times.length = 0;
+  // Destroy the list, simplify the life for garbage collector
+  list.length = 0;
 }
 
 async function run(tries, callback) {
@@ -129,7 +142,8 @@ async function run(tries, callback) {
   }
 }
 
-exports.getTime = getTime;
+exports.getTime = measure;
 exports.logMem = logMem;
+exports.calcStats = calcStats;
 exports.mark = mark;
 exports.run = run;
