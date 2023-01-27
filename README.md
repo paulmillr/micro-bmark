@@ -18,9 +18,7 @@ Benchmark your node.js projects with nanosecond resolution.
 import * as bench from 'micro-bmark';
 bench.mark('printing', () => Promise.resolve(0));
 
-// Or, use as such:
-const { mark, compare, run } = bench;
-
+const { mark, compare, run } = bench; // Or, use as such
 run(async () => {
   await mark('base', () => Promise.resolve(1));
   await mark('sqrt', 10000, () => Math.sqrt(2));
@@ -28,9 +26,8 @@ run(async () => {
     lib1: () => Math.sqrt(2),
     lib2: () => Math.sqrt(3)
   });
-
-  // bench.logMem(); // Log current RAM
-  // bench.utils.getTime(); // Get current time in nanoseconds
+  // bench.utils.logMem(); // Log current RAM
+  // console.log(bench.utils.getTime(), bench.utils.formatD(bench.utils.getTime())); // Get current time in nanoseconds
 });
 ```
 

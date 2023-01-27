@@ -16,7 +16,7 @@ function logMem() {
   };
   const vals = Object.entries(process.memoryUsage())
     .filter(([k, v]) => {
-      return v > 100000;
+      return v > 100000 && k !== 'external';
     })
     .map(([k, v]) => {
       return `${mapping[k] || k}=${`${(v / 1000000).toFixed(1)}mb`}`;
