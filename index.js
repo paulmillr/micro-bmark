@@ -3,7 +3,7 @@ const green = '\x1b[32m';
 const blue = '\x1b[34m';
 const cyan = '\x1b[36m';
 const reset = '\x1b[0m';
-function measure() {
+function getTime() {
   return process.hrtime.bigint();
 }
 
@@ -36,7 +36,7 @@ const tTable = {
   'infinity': 1.96
 };
 
-const [μs, ms, sec] = [10n ** 3n, 10n ** 6n, 10n ** 9n];
+const [μs, ms, sec, min] = [10n ** 3n, 10n ** 6n, 10n ** 9n, 60n * 10n ** 9n];
 const formatter = Intl.NumberFormat('en-US');
 
 // duration formatter
@@ -51,11 +51,19 @@ function formatD(duration) {
     symbol = 'ms';
     perItemStr = (duration / ms).toString();
   }
+  if (duration > 10n * sec) {
+    symbol = 's';
+    perItemStr = (duration / sec).toString();
+  }
+  if (duration > min) {
+    symbol = 'min';
+    perItemStr = (duration / min).toString();
+  }
   return perItemStr + symbol;
 }
 
 function calcSum(list) {
-  return list.reduce((a, b) => a + b, 0n);
+  return list.reduce((a, b) => a + b);
 }
 function calcMean(list) {
   return calcSum(list) / BigInt(list.length);
@@ -70,7 +78,7 @@ function calcCorrelation(x, y) {
   const meanX = calcMean(x);
   const meanY = calcMean(y);
   const res1 = x.map((val, i) => (val - meanX) * (y[i] - meanY));
-  const observation = calcSum(res1) / (calcDeviation(x) * calcDeviation(y));
+  const observation = Number(calcSum(res1)) / (calcDeviation(x) * calcDeviation(y));
   return observation / (x.length - 1);
 }
 
@@ -116,10 +124,10 @@ async function mark(label, samples, callback) {
   // List containing sample times
   const list = new Array(samples);
   for (let i = 0; i < samples; i++) {
-    const start = measure();
+    const start = getTime();
     const val = callback(i);
     if (val instanceof Promise) await val;
-    const stop = measure();
+    const stop = getTime();
     list[i] = stop - start;
   }
   const stats = calcStats(list);
@@ -174,4 +182,4 @@ async function run(tries, callback) {
 exports.mark = mark;
 exports.compare = compare;
 exports.run = run;
-exports.utils = { getTime: measure, logMem, formatD, calcStats, calcDeviation, calcCorrelation };
+exports.utils = { getTime, logMem, formatD, calcStats, calcDeviation, calcCorrelation };

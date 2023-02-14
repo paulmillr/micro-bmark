@@ -16,7 +16,7 @@ Benchmark your node.js projects with nanosecond resolution.
 
 ```js
 import * as bench from 'micro-bmark';
-bench.mark('printing', () => Promise.resolve(0));
+await bench.mark('printing', () => Promise.resolve(0));
 
 const { mark, compare, run } = bench; // Or, use as such
 run(async () => {
