@@ -55,7 +55,7 @@ function formatD(duration) {
     symbol = 's';
     perItemStr = (duration / sec).toString();
   }
-  if (duration > min) {
+  if (duration > 5n * min) {
     symbol = 'min';
     perItemStr = (duration / min).toString();
   }
