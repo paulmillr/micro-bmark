@@ -1,0 +1,13 @@
+{
+  "extends": "@paulmillr/jsbt/tsconfig.cjs.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "outDir": "."
+  },
+  "include": [
+    "index.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
