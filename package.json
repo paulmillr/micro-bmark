@@ -5,7 +5,11 @@
   "main": "index.js",
   "type": "module",
   "files": [
-    "index.js"
+    "index.js",
+    "compare.js",
+    "index.d.ts",
+    "compare.d.ts",
+    "src"
   ],
   "scripts": {
     "build": "tsc",
