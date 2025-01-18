@@ -1,8 +1,8 @@
 # micro-bmark
 
-Benchmark your node.js projects with nanosecond resolution.
+Benchmark your JS projects with nanosecond resolution.
 
-- Utilizes node.js `process.hrtime` for 1ns resolution
+- Utilizes `process.hrtime` for 1ns resolution
 - Colorful formatting with nice units
 - No dependencies, only ~150 lines of code: as lightweight as possible to not interfere with benchmarked code
 - No code for estimating running time - specify samples manually
@@ -15,17 +15,11 @@ Benchmark your node.js projects with nanosecond resolution.
     npm install --save-dev micro-bmark
 
 ```js
-import * as bench from 'micro-bmark';
-await bench.mark('printing', () => Promise.resolve(0));
+import bench from 'micro-bmark';
 (async () => {
-  await bench.mark('base', () => Promise.resolve(1));
-  await bench.mark('sqrt', 10000, () => Math.sqrt(2));
-  await bench.compare('math', 5000, {
-    lib1: () => Math.sqrt(2),
-    lib2: () => Math.sqrt(3)
-  });
-  // bench.utils.logMem(); // Log current RAM
-  // console.log(bench.utils.getTime(), bench.utils.formatD(bench.utils.getTime())); // Get current time in nanoseconds
+  await bench('printing', () => Promise.resolve(0));
+  await bench('base', () => Promise.resolve(1));
+  await bench('sqrt', 10000, () => Math.sqrt(2));
 })();
 ```
 
@@ -39,13 +33,6 @@ verify x 969 ops/sec @ 1ms/op
 recoverPublicKey x 890 ops/sec @ 1ms/op
 getSharedSecret aka ecdh x 585 ops/sec @ 1ms/op
 ```
-
-- `await bench.run(args?, callback)`: Runs bunch of suites. Not required
-- `await bench.mark(label?, samples?, callback)`: Measures callback (can be async) `samples` times
-- `await bench.compare(label, samples, map)`: mark, but compares runs between object values
-    - `map`: `{ a: () => {}, b: () => {} }`
-- `bench.utils.logMem(): undefined`: Logs memory usage
-- `bench.utils.getTime(): bigint`: Returns current time in bigint.
 
 ## License
 

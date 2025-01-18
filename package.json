@@ -1,13 +1,17 @@
 {
   "name": "micro-bmark",
-  "version": "0.3.1",
-  "description": "Benchmark your node.js projects with nanosecond resolution",
+  "version": "0.4.0",
+  "description": "Benchmark your JS projects with nanosecond resolution",
   "main": "index.js",
+  "type": "module",
   "files": [
     "index.js"
   ],
   "scripts": {
-    "test": "node test.js"
+    "build": "tsc",
+    "test": "node test.js",
+    "test:bun": "bun test.js",
+    "test:deno": "deno test.js"
   },
   "keywords": [
     "benchmark",
@@ -26,5 +30,9 @@
     "type": "git",
     "url": "https://github.com/paulmillr/micro-bmark.git"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@paulmillr/jsbt": "0.3.1",
+    "typescript": "5.5.2"
+  }
 }
