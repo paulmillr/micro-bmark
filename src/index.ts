@@ -176,10 +176,11 @@ export async function mark(
   }
   const { stats, perSecStr, perItemStr, measurements } = await benchmarkRaw(samples, callback);
   let str = `${label} `;
+  let perItemStrClr = `${blue}${perItemStr}${reset}`;
   if (samples === 1) {
-    str += perItemStr;
+    str += perItemStrClr;
   } else {
-    str += `x ${green}${perSecStr}${reset} ops/sec @ ${blue}${perItemStr}${reset}/op`;
+    str += `x ${green}${perSecStr}${reset} ops/sec @ ${perItemStrClr}/op`;
   }
   if (stats.rme >= 1) str += ` ${stats.formatted}`;
   // @ts-ignore
