@@ -25,7 +25,6 @@
     "microsecond",
     "millisecond",
     "hrtime",
-    "date",
     "micro"
   ],
   "author": "Paul Miller (https://paulmillr.com)",
@@ -37,7 +36,6 @@
   "license": "MIT",
   "devDependencies": {
     "@paulmillr/jsbt": "0.4.1",
-    "micro-bmark": "0.4.1",
     "micro-should": "0.5.3",
     "prettier": "3.5.3",
     "typescript": "5.8.3"
