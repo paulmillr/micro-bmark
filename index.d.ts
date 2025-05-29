@@ -1,4 +1,4 @@
-declare function getTime(): bigint;
+declare function setMaxRunTime(val: number): void;
 declare function logMem(): void;
 declare function formatDuration(duration: any): string;
 declare function calcDeviation<T extends number | bigint>(list: T[]): number;
@@ -25,13 +25,15 @@ export type BenchStats = {
     perItemStr: string;
     measurements: bigint[];
 };
-declare function benchmarkRaw(samples: number, callback: Func): Promise<BenchStats>;
+declare function getTime(): bigint;
+declare function benchmarkRaw(samples: number | undefined, callback: Func): Promise<BenchStats>;
 export type Func = (iteration?: number) => {};
 export declare function mark(label: string, samples: number, callback: Func): Promise<undefined>;
 export declare function mark(label: string, callback: Func): Promise<undefined>;
 export default mark;
 export declare const utils: {
     getTime: typeof getTime;
+    setMaxRunTime: typeof setMaxRunTime;
     logMem: typeof logMem;
     formatDuration: typeof formatDuration;
     calcStats: typeof calcStats;
@@ -39,3 +41,4 @@ export declare const utils: {
     calcCorrelation: typeof calcCorrelation;
     benchmarkRaw: typeof benchmarkRaw;
 };
+//# sourceMappingURL=index.d.ts.map

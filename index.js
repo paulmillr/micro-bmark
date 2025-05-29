@@ -4,9 +4,24 @@ const red = _c + '[31m';
 const green = _c + '[32m';
 const blue = _c + '[34m';
 const reset = _c + '[0m';
-function getTime() {
+const units = [
+    { symbol: 'min', val: 60n * 10n ** 9n, threshold: 5n },
+    { symbol: 's', val: 10n ** 9n, threshold: 10n },
+    { symbol: 'ms', val: 10n ** 6n, threshold: 1n },
+    { symbol: 'μs', val: 10n ** 3n, threshold: 1n },
+    { symbol: 'ns', val: 0n, threshold: 1n },
+];
+const SECOND = units[1].val;
+let MAX_RUN_TIME = 1n * SECOND; // 1 second
+function setMaxRunTime(val) {
+    if (!val || val < 0.1 || val > 600)
+        throw new Error('must be between 0.1 and 600 sec');
+    let tenth = BigInt(val * 10);
+    MAX_RUN_TIME = tenth * SECOND / 10n;
+}
+function printOutput(...str) {
     // @ts-ignore
-    return process.hrtime.bigint();
+    console.log(...str);
 }
 function logMem() {
     const mapping = {
@@ -25,8 +40,7 @@ function logMem() {
         const [k, v] = entry;
         return `${mapping[k] || k}=${`${(v / 1000000).toFixed(1)}mb`}`;
     });
-    // @ts-ignore
-    console.log('RAM:', vals.join(' '));
+    printOutput('RAM:', vals.join(' '));
 }
 // T-Distribution two-tailed critical values for 95% confidence.
 // http://www.itl.nist.gov/div898/handbook/eda/section3/eda3672.htm
@@ -39,13 +53,6 @@ const tTable = {
     '25': 2.06, '26': 2.056, '27': 2.052, '28': 2.048, '29': 2.045, '30': 2.042,
     'infinity': 1.96
 };
-const units = [
-    { symbol: 'min', val: 60n * 10n ** 9n, threshold: 5n },
-    { symbol: 's', val: 10n ** 9n, threshold: 10n },
-    { symbol: 'ms', val: 10n ** 6n, threshold: 1n },
-    { symbol: 'μs', val: 10n ** 3n, threshold: 1n },
-    { symbol: 'ns', val: 0n, threshold: 1n },
-];
 const formatter = Intl.NumberFormat('en-US');
 // duration formatter
 function formatDuration(duration) {
@@ -114,27 +121,42 @@ function calcStats(list) {
     const formatted = `${red}± ${rme.toFixed(2)}% (${formatDuration(min)}..${formatDuration(max)})${reset}`;
     return { rme, min, max, mean, median, formatted };
 }
+function getTime() {
+    // @ts-ignore
+    return process.hrtime.bigint();
+}
 async function benchmarkRaw(samples, callback) {
-    if (!Number.isSafeInteger(samples) || samples <= 0)
+    if (samples == null) {
+        samples = Number.POSITIVE_INFINITY;
+    }
+    else if (!Number.isSafeInteger(samples) || samples <= 0) {
         throw new Error('samples must be a number');
+    }
     if (typeof callback !== 'function')
         throw new Error('callback must be a function');
     // List containing sample times
-    const list = new Array(samples);
+    // pre-allocating using `new Array(1_000_000)` is in some cases more efficient for
+    // garbage collection than growing array size continuously.
+    const measurements = [];
+    let total = 0n;
     for (let i = 0; i < samples; i++) {
         const start = getTime();
         const val = callback(i);
         if (val instanceof Promise)
             await val;
         const stop = getTime();
-        list[i] = stop - start;
+        const diff = stop - start;
+        measurements.push(diff);
+        total += diff;
+        if (total >= MAX_RUN_TIME)
+            break;
     }
-    const stats = calcStats(list);
+    const stats = calcStats(measurements);
     const perItemStr = formatDuration(stats.mean);
     const sec = units[1].val;
     const perSec = sec / stats.mean;
     const perSecStr = formatter.format(sec / stats.mean);
-    return { stats, perSecStr, perSec, perItemStr, measurements: list };
+    return { stats, perSecStr, perSec, perItemStr, measurements };
 }
 export async function mark(label, samplesFN, callbackFN) {
     if (typeof label !== 'string')
@@ -143,11 +165,9 @@ export async function mark(label, samplesFN, callbackFN) {
     let callback;
     if (typeof samplesFN === 'function') {
         callback = samplesFN;
-        samples = 1;
+        samples = undefined;
     }
     else {
-        if (samplesFN == null)
-            samplesFN = 1;
         if (typeof callbackFN !== 'function')
             throw new Error('callback must be a function');
         samples = samplesFN;
@@ -164,8 +184,7 @@ export async function mark(label, samplesFN, callbackFN) {
     }
     if (stats.rme >= 1)
         str += ` ${stats.formatted}`;
-    // @ts-ignore
-    console.log(str);
+    printOutput(str);
     // Destroy the list, simplify the life for garbage collector
     measurements.length = 0;
     return;
@@ -173,6 +192,7 @@ export async function mark(label, samplesFN, callbackFN) {
 export default mark;
 export const utils = {
     getTime,
+    setMaxRunTime,
     logMem,
     formatDuration,
     calcStats,
@@ -180,3 +200,4 @@ export const utils = {
     calcCorrelation,
     benchmarkRaw,
 };
+//# sourceMappingURL=index.js.map

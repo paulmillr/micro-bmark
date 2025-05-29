@@ -270,3 +270,4 @@ async function compare(title, dimensions, libs, opts) {
 }
 export default compare;
 export { compare };
+//# sourceMappingURL=compare.js.map
