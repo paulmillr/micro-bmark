@@ -2,8 +2,6 @@
   "name": "micro-bmark",
   "version": "0.4.2",
   "description": "Benchmark your JS projects with nanosecond resolution",
-  "main": "index.js",
-  "type": "module",
   "files": [
     "index.js",
     "compare.js",
@@ -11,6 +9,12 @@
     "compare.d.ts",
     "src"
   ],
+  "devDependencies": {
+    "@paulmillr/jsbt": "0.4.1",
+    "micro-should": "0.5.3",
+    "prettier": "3.6.2",
+    "typescript": "5.9.2"
+  },
   "scripts": {
     "build": "tsc",
     "test": "node test.js",
@@ -27,17 +31,15 @@
     "hrtime",
     "micro"
   ],
-  "author": "Paul Miller (https://paulmillr.com)",
-  "homepage": "https://github.com/paulmillr/micro-bmark",
   "repository": {
     "type": "git",
-    "url": "https://github.com/paulmillr/micro-bmark.git"
+    "url": "git+https://github.com/paulmillr/micro-bmark.git"
   },
-  "license": "MIT",
-  "devDependencies": {
-    "@paulmillr/jsbt": "0.4.1",
-    "micro-should": "0.5.3",
-    "prettier": "3.5.3",
-    "typescript": "5.8.3"
-  }
+  "type": "module",
+  "main": "index.js",
+  "module": "index.js",
+  "types": "index.d.ts",
+  "sideEffects": false,
+  "author": "Paul Miller (https://paulmillr.com)",
+  "license": "MIT"
 }
