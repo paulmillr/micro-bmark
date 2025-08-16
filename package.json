@@ -17,9 +17,9 @@
   },
   "scripts": {
     "build": "tsc",
-    "test": "node test.js",
-    "test:bun": "bun test.js",
-    "test:deno": "deno test.js"
+    "test": "node test.ts",
+    "test:bun": "bun test.ts",
+    "test:deno": "deno test.ts"
   },
   "keywords": [
     "benchmark",
