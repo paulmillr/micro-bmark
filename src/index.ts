@@ -147,7 +147,7 @@ function getTime(): bigint {
 }
 async function benchmarkRaw(samples: number | undefined, callback: Func): Promise<BenchStats> {
   if (samples == null) {
-    samples = Number.POSITIVE_INFINITY;
+    samples = 2 ** 26;
   } else if (!Number.isSafeInteger(samples) || samples <= 0) {
     throw new Error('samples must be a number');
   }
