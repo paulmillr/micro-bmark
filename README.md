@@ -1,5 +1,9 @@
 # micro-bmark
 
+> [!IMPORTANT]
+> The package got merged into [paulmillr/jsbt](https://github.com/paulmillr/jsbt)
+> and is now deprecated.
+
 Benchmark your JS projects with nanosecond resolution.
 
 - Precise: 1ns resolution using `process.hrtime`
